@@ -11,36 +11,39 @@ password = input("Enter your password: ")
 days = input("Enter a number of days of subscription: ")
 
 #Викликаємо драйвер Google Chrome на максимальному розширенні екрана з затримкою в 1 секунду
-options = Options()
-options.add_argument('--start-maximized')
-service = Service(ChromeDriverManager().install())
-driver = webdriver.Chrome(service=service, options=options)
-driver.get("https://freevpnplanet.com/login/")
-time.sleep(1)
+def ex_browser():
+
+    options = Options()
+    options.add_argument('--start-maximized')
+    service = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service, options=options)
+    return driver
 
 #Прописується введений юзером аргумент зі змінної "email" у поле "Enter email"
-user_mail = (driver.find_element(By.XPATH, '//*[@id="__layout"]/div/main/div[2]/div[1]/div[1]/div[2]/div/label/input')
-             .send_keys(email))
-
+def login(email, password, driver):
+    driver.get("https://freevpnplanet.com/login/")
+    time.sleep(1)
+    driver.find_element(By.XPATH, '//*[@id="__layout"]/div/main/div[2]/div[1]/div[1]/div[2]/div/label/input').send_keys(email)
 #Прописується введений юзером аргумент зі змінної "password" у поле "Enter password"
-user_pass = (driver.find_element(By.XPATH,'//*[@id="__layout"]/div/main/div[2]/div[1]/div[1]/div[3]/div/label/input')
-             .send_keys(password))
-
+    driver.find_element(By.XPATH,'//*[@id="__layout"]/div/main/div[2]/div[1]/div[1]/div[3]/div/label/input').send_keys(password)
 #Клік на кнопку "Login" і затримка в 3 секунди
-login_button = driver.find_element(By.XPATH,'//*[@id="__layout"]/div/main/div[2]/div[1]/div[1]/button').click()
-time.sleep(3)
-
+    driver.find_element(By.XPATH,'//*[@id="__layout"]/div/main/div[2]/div[1]/div[1]/button').click()
+    time.sleep(3)
+def cabinet(driver, days):
 #Забираємо текстове значення з поля "Number of days" і затримка 2 секунди перед закриттям браузера
-subscription = driver.find_element(By.XPATH, '//*[@id="__layout"]/div/div[2]/div/div[2]/div[1]/div[2]/div/div[1]/'
+    subscription = driver.find_element(By.XPATH, value='//*[@id="__layout"]/div/div[2]/div/div[2]/div[1]/div[2]/div/div[1]/'
                                              'div[2]/div/div[2]/b').text
-time.sleep(2)
-
-driver.close()
-driver.quit()
+    time.sleep(3)
 
 #Виводимо текст при умові співпадіння значень аргументу змінної "days" з даними змінної "Subscription"
-if days == subscription:
-    print("The number of your subscription days is: " + str(days))
+    if days == subscription:
+        print("The number of your subscription days is: " + str(days))
 # Виводимо текст при умові різних значень аргументу змінної "days" і даних змінної "Subscription"
-assert days == subscription, "The correct number of your subscription days is: " + str(subscription)
+    assert days == subscription, "The correct number of your subscription days is: " + str(subscription)
+
+driver = ex_browser()
+login(email, password, driver)
+cabinet(driver, days)
+driver.close()
+driver.quit()
 
